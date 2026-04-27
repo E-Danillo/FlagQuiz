@@ -3,4 +3,3 @@ data/*.db
 data/*.db-shm
 data/*.db-wal
 .env
-public/supabase-config.js

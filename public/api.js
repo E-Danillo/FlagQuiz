@@ -140,7 +140,7 @@
 
     if (!sb) {
       tbody.innerHTML =
-        '<tr><td colspan="4" class="table-muted">Configuração em falta: copie <code>supabase-config.example.js</code> para <code>supabase-config.js</code>.</td></tr>';
+        '<tr><td colspan="4" class="table-muted">Supabase não carregou. Confirme que <code>supabase-config.js</code> existe, a chave no ficheiro está certa e que abre o site por <code>https://</code> (não <code>file://</code>).</td></tr>';
       return;
     }
 
