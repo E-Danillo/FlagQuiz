@@ -134,25 +134,53 @@
     <section id="screen-leaderboard" class="screen">
       <div class="card">
         <h2>Ranking da semana</h2>
-        <p id="leaderboard-since" class="subtle">Melhores pontuações desde segunda-feira (hora do servidor).</p>
+        <p id="leaderboard-since" class="subtle">Melhores pontuações da semana (UTC), separadas por modo.</p>
         <p id="leaderboard-hint" class="hint"></p>
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Jogador</th>
-                <th>Pontos</th>
-                <th>Quando</th>
-              </tr>
-            </thead>
-            <tbody id="leaderboard-body">
-              <tr>
-                <td colspan="4" class="table-muted">A carregar…</td>
-              </tr>
-            </tbody>
-          </table>
+
+        <div class="leaderboard-split">
+          <div class="leaderboard-block">
+            <h3 class="leaderboard-mode-title">Bandeira → Nome</h3>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Jogador</th>
+                    <th>Pontos</th>
+                    <th>Quando</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboard-body-flag">
+                  <tr>
+                    <td colspan="4" class="table-muted">A carregar…</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="leaderboard-block">
+            <h3 class="leaderboard-mode-title">Nome → Bandeira</h3>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Jogador</th>
+                    <th>Pontos</th>
+                    <th>Quando</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboard-body-name">
+                  <tr>
+                    <td colspan="4" class="table-muted">A carregar…</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
+
         <button type="button" class="btn ghost full btn-back" data-back="screen-home">← Início</button>
       </div>
     </section>

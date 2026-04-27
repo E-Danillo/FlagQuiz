@@ -103,8 +103,14 @@ create trigger trg_trim_matches
   after insert on public.matches
   for each row execute function public.trim_old_matches();
 
--- Ranking semanal (UTC, semana a começar segunda-feira ISO)
-create or replace function public.leaderboard_week(p_limit int default 20)
+-- Ranking semanal (UTC). p_mode: 'flag-to-name' | 'name-to-flag' | null (todos os modos)
+drop function if exists public.leaderboard_week(int);
+drop function if exists public.leaderboard_week(int, text);
+
+create or replace function public.leaderboard_week(
+  p_limit int default 20,
+  p_mode text default null
+)
 returns table (
   rank bigint,
   display_name text,
@@ -130,8 +136,9 @@ as $$
   left join public.profiles p on p.id = m.user_id
   cross join bounds b
   where m.played_at >= b.ws
+    and (p_mode is null or m.mode = p_mode)
   order by m.score desc, m.played_at asc
   limit greatest(1, least(coalesce(p_limit, 20), 50));
 $$;
 
-grant execute on function public.leaderboard_week(int) to anon, authenticated;
+grant execute on function public.leaderboard_week(int, text) to anon, authenticated;

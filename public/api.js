@@ -130,26 +130,81 @@
     }
   }
 
+  function renderLeaderboardRows(tbody, rows, emptyMsg) {
+    tbody.innerHTML = "";
+    if (!rows.length) {
+      tbody.innerHTML =
+        '<tr><td colspan="4" class="table-muted">' +
+        escapeHtml(emptyMsg) +
+        "</td></tr>";
+      return;
+    }
+    rows.forEach(function (row) {
+      var tr = document.createElement("tr");
+      var when = new Date(row.played_at);
+      tr.innerHTML =
+        "<td>" +
+        escapeHtml(String(row.rank)) +
+        "</td>" +
+        "<td>" +
+        escapeHtml(row.display_name) +
+        "</td>" +
+        "<td>" +
+        Number(row.score).toLocaleString("pt-BR") +
+        "</td>" +
+        "<td>" +
+        when.toLocaleString("pt-BR", {
+          day: "2-digit",
+          month: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        }) +
+        "</td>";
+      tbody.appendChild(tr);
+    });
+  }
+
   async function loadLeaderboard() {
-    var tbody = document.getElementById("leaderboard-body");
+    var tbodyFlag = document.getElementById("leaderboard-body-flag");
+    var tbodyName = document.getElementById("leaderboard-body-name");
     var hint = document.getElementById("leaderboard-hint");
     var sinceEl = document.getElementById("leaderboard-since");
-    if (!tbody) return;
-    tbody.innerHTML =
+    if (!tbodyFlag || !tbodyName) return;
+
+    var loading =
       '<tr><td colspan="4" class="table-muted">A carregar…</td></tr>';
+    tbodyFlag.innerHTML = loading;
+    tbodyName.innerHTML = loading;
 
     if (!sb) {
-      tbody.innerHTML =
-        '<tr><td colspan="4" class="table-muted">Supabase não carregou. Confirme que <code>supabase-config.js</code> existe, a chave no ficheiro está certa e que abre o site por <code>https://</code> (não <code>file://</code>).</td></tr>';
+      var err =
+        'Supabase não carregou. Confirme <code>supabase-config.js</code> e use <code>https://</code>.';
+      tbodyFlag.innerHTML =
+        '<tr><td colspan="4" class="table-muted">' + err + "</td></tr>";
+      tbodyName.innerHTML =
+        '<tr><td colspan="4" class="table-muted">' + err + "</td></tr>";
       return;
     }
 
     try {
-      var res = await sb.rpc("leaderboard_week", { p_limit: 20 });
-      if (res.error) throw res.error;
-      var rows = res.data || [];
-      if (sinceEl && rows.length && rows[0].week_start) {
-        var ws = new Date(rows[0].week_start);
+      var resFlag = await sb.rpc("leaderboard_week", {
+        p_limit: 20,
+        p_mode: "flag-to-name",
+      });
+      if (resFlag.error) throw resFlag.error;
+
+      var resName = await sb.rpc("leaderboard_week", {
+        p_limit: 20,
+        p_mode: "name-to-flag",
+      });
+      if (resName.error) throw resName.error;
+
+      var rowsFlag = resFlag.data || [];
+      var rowsName = resName.data || [];
+      var sample = rowsFlag.length ? rowsFlag[0] : rowsName[0];
+
+      if (sinceEl && sample && sample.week_start) {
+        var ws = new Date(sample.week_start);
         sinceEl.textContent =
           "Semana atual (UTC, desde " +
           ws.toLocaleDateString("pt-BR", {
@@ -157,51 +212,32 @@
             day: "numeric",
             month: "short",
           }) +
-          ")";
+          ") — um ranking por modo.";
       } else if (sinceEl) {
-        sinceEl.textContent = "Semana actual (UTC).";
+        sinceEl.textContent =
+          "Semana actual (UTC) — um ranking por modo.";
       }
 
-      if (!rows.length) {
-        tbody.innerHTML =
-          '<tr><td colspan="4" class="table-muted">Ainda não há pontuações esta semana.</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = "";
-      rows.forEach(function (row) {
-        var tr = document.createElement("tr");
-        var when = new Date(row.played_at);
-        tr.innerHTML =
-          "<td>" +
-          escapeHtml(String(row.rank)) +
-          "</td>" +
-          "<td>" +
-          escapeHtml(row.display_name) +
-          "</td>" +
-          "<td>" +
-          Number(row.score).toLocaleString("pt-BR") +
-          "</td>" +
-          "<td>" +
-          when.toLocaleString("pt-BR", {
-            day: "2-digit",
-            month: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-          }) +
-          "</td>";
-        tbody.appendChild(tr);
-      });
+      renderLeaderboardRows(
+        tbodyFlag,
+        rowsFlag,
+        "Nenhuma partida neste modo esta semana."
+      );
+      renderLeaderboardRows(
+        tbodyName,
+        rowsName,
+        "Nenhuma partida neste modo esta semana."
+      );
       if (hint) hint.textContent = "";
     } catch (e) {
       var msg =
-        e && e.message
-          ? e.message
-          : "Erro ao carregar ranking.";
-      tbody.innerHTML =
+        e && e.message ? e.message : "Erro ao carregar ranking.";
+      var rowErr =
         '<tr><td colspan="4" class="table-muted">' +
         escapeHtml(msg) +
-        " Executou <code>supabase/schema.sql</code> no painel?</td></tr>";
+        " Executou <code>supabase/migrate_leaderboard_two_modes.sql</code>?</td></tr>";
+      tbodyFlag.innerHTML = rowErr;
+      tbodyName.innerHTML = rowErr;
       if (hint) hint.textContent = "";
     }
   }

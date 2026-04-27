@@ -707,6 +707,20 @@ body {
   margin-top: 0.25rem;
 }
 
+.leaderboard-split {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.leaderboard-mode-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
 .card-nested {
   margin-bottom: 1.25rem;
   padding: 1rem 0 0;
