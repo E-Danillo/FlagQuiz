@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FlagQuiz</title>
+  <link rel="preconnect" href="https://flagcdn.com" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="topbar-brand">
+          <h1 class="logo">FlagQuiz</h1>
+          <p class="tagline">Aprenda bandeiras jogando</p>
+        </div>
+        <div class="topbar-aside">
+          <span id="auth-chip" class="auth-chip muted">Convidado</span>
+          <nav class="nav-mini" aria-label="Secções">
+            <button type="button" class="btn nav-btn" id="nav-ranking">Ranking</button>
+            <button type="button" class="btn nav-btn" id="nav-history">Histórico</button>
+            <button type="button" class="btn nav-btn" id="nav-account">Conta</button>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- Início -->
+    <section id="screen-home" class="screen active">
+      <div class="card card-home">
+        <h2>Escolha o modo</h2>
+        <div class="mode-grid">
+          <button type="button" class="mode-btn selected" data-mode="flag-to-name">
+            <span class="mode-icon" aria-hidden="true">🏴</span>
+            <span class="mode-title">Bandeira → Nome</span>
+            <span class="mode-desc">Veja a bandeira e escolha o país</span>
+          </button>
+          <button type="button" class="mode-btn" data-mode="name-to-flag">
+            <span class="mode-icon" aria-hidden="true">🌍</span>
+            <span class="mode-title">Nome → Bandeira</span>
+            <span class="mode-desc">Veja o nome e escolha a bandeira correta</span>
+          </button>
+        </div>
+        <div class="category-row">
+          <label for="category">Categoria</label>
+          <select id="category" disabled>
+            <option value="paises" selected>Países</option>
+          </select>
+          <span class="hint">Mais categorias em breve</span>
+        </div>
+        <button type="button" class="btn primary full" id="btn-start">Começar</button>
+      </div>
+    </section>
+
+    <!-- Quiz -->
+    <section id="screen-quiz" class="screen">
+      <div class="quiz-header">
+        <div class="progress-block">
+          <span class="rf-label">Progresso</span>
+          <div class="progress-meta">
+            <span id="progress-text">Questão 1 de 10</span>
+            <span id="category-label" class="pill">Países</span>
+          </div>
+          <div class="progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="10">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="timer-block" aria-hidden="false">
+          <div class="timer-meta">
+            <span class="timer-caption">Tempo</span>
+            <span id="timer-seconds" class="timer-seconds">15</span>
+          </div>
+          <div class="timer-track" role="presentation">
+            <div class="timer-fill" id="timer-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card quiz-card">
+        <div id="quiz-panel" class="quiz-panel">
+          <p id="question-prompt" class="question-prompt">De qual país é essa bandeira?</p>
+
+          <div id="flag-to-name-view" class="quiz-view hidden">
+            <div class="flag-frame">
+              <img id="question-flag" src="" alt="Bandeira do país" width="320" height="213" loading="lazy" />
+            </div>
+            <div id="choices-text" class="choices choices-text"></div>
+          </div>
+
+          <div id="name-to-flag-view" class="quiz-view hidden">
+            <p id="country-name-display" class="country-name-display"></p>
+            <div id="choices-flags" class="choices choices-flags"></div>
+          </div>
+
+          <div id="feedback" class="feedback hidden" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fim -->
+    <section id="screen-end" class="screen">
+      <div class="card card-end">
+        <div class="trophy" aria-hidden="true">🏆</div>
+        <h2>Fim de jogo!</h2>
+        <p class="end-sub">Você completou a rodada de <strong>Países</strong></p>
+        <div class="stats-grid">
+          <div class="stat">
+            <span class="stat-value" id="end-points">0</span>
+            <span class="stat-label">pontos totais</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value good" id="end-correct">0</span>
+            <span class="stat-label">Acertos</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value bad" id="end-wrong">0</span>
+            <span class="stat-label">Erros</span>
+          </div>
+          <div class="stat stat-wide">
+            <span class="stat-value xp" id="end-xp">+0</span>
+            <span class="stat-label">XP ganho</span>
+          </div>
+        </div>
+        <div class="end-actions">
+          <button type="button" class="btn primary" id="btn-play-again">Jogar novamente</button>
+          <button type="button" class="btn ghost" id="btn-home">Início</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ranking semanal -->
+    <section id="screen-leaderboard" class="screen">
+      <div class="card">
+        <h2>Ranking da semana</h2>
+        <p id="leaderboard-since" class="subtle">Melhores pontuações desde segunda-feira (hora do servidor).</p>
+        <p id="leaderboard-hint" class="hint"></p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Jogador</th>
+                <th>Pontos</th>
+                <th>Quando</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+              <tr>
+                <td colspan="4" class="table-muted">A carregar…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button type="button" class="btn ghost full btn-back" data-back="screen-home">← Início</button>
+      </div>
+    </section>
+
+    <!-- Histórico -->
+    <section id="screen-history" class="screen">
+      <div class="card">
+        <h2>Últimas partidas</h2>
+        <p class="subtle">Até 10 partidas guardadas por conta (as mais recentes).</p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Pontos</th>
+                <th>✓</th>
+                <th>✗</th>
+                <th>Modo</th>
+              </tr>
+            </thead>
+            <tbody id="history-body">
+              <tr>
+                <td colspan="5" class="table-muted">Inicie sessão para ver o histórico.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button type="button" class="btn ghost full btn-back" data-back="screen-home">← Início</button>
+      </div>
+    </section>
+
+    <!-- Conta -->
+    <section id="screen-account" class="screen">
+      <div class="card">
+        <h2>Conta</h2>
+
+        <div id="account-guest">
+          <div id="block-login">
+            <p class="subtle">Inicie sessão para guardar partidas e aparecer no ranking.</p>
+            <form id="form-login" class="stack-form">
+              <label>E-mail<input type="email" name="email" required autocomplete="email" /></label>
+              <label>Senha<input type="password" name="password" required autocomplete="current-password" /></label>
+              <p id="account-error-login" class="form-error" role="alert"></p>
+              <button type="submit" class="btn primary full">Entrar</button>
+            </form>
+            <p class="form-switch">
+              Não tem conta?
+              <a href="#" id="link-show-register">Criar conta</a>
+            </p>
+          </div>
+
+          <div id="block-register" class="hidden">
+            <form id="form-register" class="stack-form">
+              <label>Nome público<input type="text" name="displayName" required maxlength="40" autocomplete="nickname" /></label>
+              <label>E-mail<input type="email" name="email" required autocomplete="email" /></label>
+              <label>Senha<input type="password" name="password" required minlength="6" autocomplete="new-password" /></label>
+              <p id="account-error-register" class="form-error" role="alert"></p>
+              <button type="submit" class="btn primary full">Registar</button>
+            </form>
+            <p class="form-switch">
+              Já tem conta?
+              <a href="#" id="link-show-login">Entrar</a>
+            </p>
+          </div>
+        </div>
+
+        <div id="account-logged" class="hidden">
+          <p class="logged-greeting">Olá, <strong id="account-display-name"></strong></p>
+
+          <div class="profile-edit card-nested">
+            <h3 class="profile-edit-title">Editar perfil</h3>
+            <p class="subtle profile-edit-hint">Informações opcionais — só para a tua conta.</p>
+            <form id="form-profile" class="stack-form">
+              <label
+                >País de origem
+                <input
+                  type="text"
+                  name="country"
+                  maxlength="80"
+                  autocomplete="country-name"
+                  placeholder="Ex.: Portugal, Brasil…"
+              /></label>
+              <label
+                >Idade
+                <input type="number" name="age" min="6" max="120" step="1" inputmode="numeric" placeholder="Opcional"
+              /></label>
+              <p id="profile-save-msg" class="profile-save-msg" role="status" aria-live="polite"></p>
+              <button type="submit" class="btn primary full">Guardar perfil</button>
+            </form>
+          </div>
+
+          <div class="logged-actions">
+            <button type="button" class="btn primary full" id="btn-open-history">Ver histórico</button>
+            <button type="button" class="btn ghost full" id="btn-logout">Sair</button>
+          </div>
+        </div>
+
+        <button type="button" class="btn ghost full btn-back" data-back="screen-home">← Início</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.104.1/dist/umd/supabase.js"></script>
+  <script src="paises.js"></script>
+  <script src="api.js"></script>
+  <script src="game.js"></script>
+  <script>
+    (function () {
+      function goHome() {
+        document.querySelectorAll(".screen").forEach(function (s) {
+          s.classList.remove("active");
+        });
+        document.getElementById("screen-home").classList.add("active");
+        if (window.FlagQuizAuth && window.FlagQuizAuth.refreshChip) {
+          window.FlagQuizAuth.refreshChip();
+        }
+      }
+
+      document.getElementById("nav-ranking")?.addEventListener("click", function () {
+        document.querySelectorAll(".screen").forEach(function (s) {
+          s.classList.remove("active");
+        });
+        document.getElementById("screen-leaderboard").classList.add("active");
+        window.FlagQuizAuth?.loadLeaderboard?.();
+      });
+
+      document.getElementById("nav-history")?.addEventListener("click", function () {
+        document.querySelectorAll(".screen").forEach(function (s) {
+          s.classList.remove("active");
+        });
+        document.getElementById("screen-history").classList.add("active");
+        window.FlagQuizAuth?.loadHistory?.();
+      });
+
+      document.getElementById("nav-account")?.addEventListener("click", function () {
+        document.querySelectorAll(".screen").forEach(function (s) {
+          s.classList.remove("active");
+        });
+        document.getElementById("screen-account").classList.add("active");
+        window.FlagQuizAuth?.syncAccountPanel?.();
+      });
+
+      document.querySelectorAll(".btn-back").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          goHome();
+        });
+      });
+
+      document.getElementById("btn-open-history")?.addEventListener("click", function () {
+        document.querySelectorAll(".screen").forEach(function (s) {
+          s.classList.remove("active");
+        });
+        document.getElementById("screen-history").classList.add("active");
+        window.FlagQuizAuth?.loadHistory?.();
+      });
+    })();
+  </script>
+</body>
+</html>

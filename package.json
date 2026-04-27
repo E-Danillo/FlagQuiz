@@ -1,0 +1,19 @@
+{
+  "name": "flagquiz",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Quiz de bandeiras com contas e SQLite",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "better-sqlite3": "^11.9.1",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
