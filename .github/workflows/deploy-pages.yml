@@ -21,6 +21,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Gerar supabase-config.js a partir de Secrets (recomendado)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
+            echo "window.FLAGQUIZ_SUPABASE_URL = \"$SUPABASE_URL\";" > public/supabase-config.js
+            echo "window.FLAGQUIZ_SUPABASE_ANON_KEY = \"$SUPABASE_ANON_KEY\";" >> public/supabase-config.js
+          else
+            echo "AVISO: defina os secrets SUPABASE_URL e SUPABASE_ANON_KEY no repositório para o login funcionar no site publicado."
+          fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
