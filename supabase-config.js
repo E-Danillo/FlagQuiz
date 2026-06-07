@@ -3,6 +3,6 @@
  * O workflow do GitHub Actions pode substituir este ficheiro se definires
  * os secrets SUPABASE_URL e SUPABASE_ANON_KEY.
  */
-window.FLAGQUIZ_SUPABASE_URL = "https://kyqqsxexcyudtgkifmsc.supabase.co";
+window.FLAGQUIZ_SUPABASE_URL = "https://nesvhpjkgjbmbmmsxysk.supabase.co";
 window.FLAGQUIZ_SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5cXFzeGV4Y3l1ZHRna2lmbXNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMDM0ODQsImV4cCI6MjA5Mjg3OTQ4NH0.0Cu3G7c83QSuuitNloIOgGNZWy3MlJkgS9XZRW0M9Zk";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lc3ZocGprZ2pibWJtbXN4eXNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MDc4ODgsImV4cCI6MjA5NjM4Mzg4OH0.Ghc5801JhfaBHgI5UKpNl4Va6FXxts5gY2pWioJMqKg";
