@@ -49,6 +49,8 @@ FlagQuiz/
 
 ## Créditos
 
-Projeto desenvolvido originalmente em grupo, com contribuição de Ricardo P. Brito.
+Projeto desenvolvido originalmente em grupo.
 
-Manutenção, correções, configuração do Supabase e publicação no GitHub Pages realizadas por E-Danillo.
+- Ricardo P. Brito: contribuição no desenvolvimento do projeto
+- Gisele: design e interface do usuário (UI)
+- E-Danillo: manutenção, correções, configuração do Supabase e publicação no GitHub Pages
